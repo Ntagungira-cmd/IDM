@@ -34,15 +34,15 @@ public class WebsiteService {
         return websiteRepository.findById(id).orElse(null);
     }
 
-    public Website create(URL url) {
+    public Website create(String url) {
 
         try {
-
+            URL url1 = new URL(url);
             Website website = new Website();
-            website.setWebsite_name(url.getHost());
+            website.setWebsite_name(url1.getHost());
             website.setDownload_start_date_time(LocalDateTime.now());
 
-            String fileName = url.getFile();
+            String fileName = url1.getFile();
             // use index.html on urls without filename
             if (fileName.isEmpty() || fileName.length() < 3) {
                 fileName = "index.html";
@@ -54,7 +54,7 @@ public class WebsiteService {
             createFolder(linksPath);
 
             BufferedReader readr =
-                    new BufferedReader(new InputStreamReader(url.openStream()));
+                    new BufferedReader(new InputStreamReader(url1.openStream()));
 
             // Enter filename in which you want to download
             BufferedWriter writer =

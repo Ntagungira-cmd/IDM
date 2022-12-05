@@ -1,7 +1,6 @@
 package com.ali.IDM.controller;
 
 import com.ali.IDM.Utility.APIResponse;
-import com.ali.IDM.dto.CreateWebsiteDTO;
 import com.ali.IDM.model.Website;
 import com.ali.IDM.services.WebsiteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
@@ -19,23 +17,19 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.util.Assert.isInstanceOf;
+
 
 @ExtendWith(SpringExtension.class)
 class WebsiteControllerTest {
@@ -110,39 +104,37 @@ class WebsiteControllerTest {
         ).andReturn();
     }
 
+    //TODO add expected content
     @Test
     void create_Success() throws Exception {
 
-        CreateWebsiteDTO url = CreateWebsiteDTO.builder().url("https://igihe.com").build();
-
+        String url = "https://igihe.com";
 
         ResultActions result = mockMvc.perform(post("/site/add")
-                .content(objectMapper.writeValueAsString(url))
+                .content(url)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
-        verify(websiteService, atLeastOnce()).create(new URL(url.getUrl()));
+        verify(websiteService, atLeastOnce()).create(url);
 
         result.andExpect(status().isOk());
     }
 
+    //TODO add expected content
     @Test
     void create_RequiredUrl() throws Exception {
-
-        CreateWebsiteDTO url = CreateWebsiteDTO.builder().url("").build();
-
-        given(websiteService.create(new URL(url.getUrl()))).willAnswer(invocation-> {throw new MalformedURLException("Malformed Url");});
+        String url ="";
 
         ResultActions result = mockMvc.perform(post("/site/add")
-                .content(objectMapper.writeValueAsString(url))
+                .content(url)
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
-        verify(websiteService, never()).create(new URL(url.getUrl()));
+        verify(websiteService, never()).create(url);
 
-        result.andExpect(
+        result.andExpectAll(
                 status().isBadRequest()
-        );
+        ).andReturn();
     }
 
 }
