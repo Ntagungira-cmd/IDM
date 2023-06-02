@@ -108,7 +108,8 @@ class WebsiteControllerTest {
     @Test
     void create_Success() throws Exception {
 
-        String url = "https://igihe.com";
+        String _url = "https://igihe.com";
+
 
         ResultActions result = mockMvc.perform(post("/site/add")
                 .content(url)

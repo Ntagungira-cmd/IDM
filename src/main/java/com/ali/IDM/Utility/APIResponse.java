@@ -9,10 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class APIResponse {
     private boolean status;
-
     private String message;
 
 }

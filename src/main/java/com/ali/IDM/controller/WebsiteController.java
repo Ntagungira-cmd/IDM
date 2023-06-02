@@ -2,6 +2,7 @@ package com.ali.IDM.controller;
 
 import com.ali.IDM.Utility.APIResponse;
 import com.ali.IDM.model.Website;
+import com.ali.IDM.request.ReqUrl;
 import com.ali.IDM.services.WebsiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 @RestController
@@ -34,12 +37,9 @@ public class WebsiteController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> createWebsite(@Valid @RequestBody String url){
-
-        if(url!=null)return ResponseEntity.ok(website.create(url));
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new APIResponse(false,"Invalid URL"));
+    public ResponseEntity<?> createWebsite(@Valid @RequestBody ReqUrl url) throws MalformedURLException {
+        URL url1 = new URL(url.getUrl());
+        return ResponseEntity.ok(website.create(url1));
     }
 
 }

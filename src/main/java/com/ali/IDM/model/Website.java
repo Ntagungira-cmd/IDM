@@ -14,12 +14,13 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
+@Entity
+@Table(name = "websites")
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "websites")
 public class Website {
 
     @Id
@@ -35,7 +36,6 @@ public class Website {
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime download_start_date_time;
-
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime download_end_date_time;
