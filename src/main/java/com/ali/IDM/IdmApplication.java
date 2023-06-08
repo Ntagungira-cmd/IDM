@@ -2,9 +2,17 @@ package com.ali.IDM;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class IdmApplication {
+public class IdmApplication extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(IdmApplication.class);
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(IdmApplication.class, args);
 	}
