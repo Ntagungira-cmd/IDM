@@ -18,36 +18,33 @@ public class LinkService {
     @Autowired
     LinkRepository linkRepository;
 
-    public Link create(ReqLink linkDTO) throws IOException {
+    public void create(ReqLink linkDTO) throws IOException {
         Link link = new Link();
 
-        String filePath= linkDTO.getPath() + "/index.html";
+        String filePath= linkDTO.getPath() + "index.html";
         link.setLink_name(linkDTO.getUrl().getFile());
         link.setWebsite(linkDTO.getWebsite());
-
 
         LocalDateTime start = LocalDateTime.now();
 
         BufferedReader readr =
                 new BufferedReader(new InputStreamReader(linkDTO.getUrl().openStream()));
-
         // Enter filename in which you want to download
         BufferedWriter writer =
                 new BufferedWriter(new FileWriter(filePath));
-
         // read each line from stream till end
         String line;
         while ((line = readr.readLine()) != null) {
             writer.write(line);
         }
-
         readr.close();
         writer.close();
+        System.out.println("Done with "+ filePath);
         LocalDateTime end = LocalDateTime.now();
         link.setTotal_elapsed_time(Duration.between(start,end).toMillis());
         link.setTotal_downloaded_kilobytes(Files.size(Paths.get(filePath)) / 1024);
         link.setId(UUID.randomUUID());
-        return linkRepository.save(link);
+        linkRepository.save(link);
     }
 
 }

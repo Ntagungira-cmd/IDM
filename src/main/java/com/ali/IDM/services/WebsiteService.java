@@ -27,14 +27,19 @@ import static com.ali.IDM.Utility.Utility.createFolder;
 @Service
 public class WebsiteService {
 
-    @Autowired
+    final
     WebsiteRepository websiteRepository;
 
-    @Autowired
+    final
     LinkService linkService;
 
     @Value("${upload.directory}")
     private String savingPath;
+
+    public WebsiteService(WebsiteRepository websiteRepository, LinkService linkService) {
+        this.websiteRepository = websiteRepository;
+        this.linkService = linkService;
+    }
 
     public List<Website> all() {
         return websiteRepository.findAll();
@@ -52,13 +57,6 @@ public class WebsiteService {
             links.add(e.attr("href"));
         }
         return links;
-    }
-    public void createFolder(String path){
-        File pathAsFile = new File(path);
-        System.out.println(path+"creating folder");
-        if (!Files.exists(Paths.get(path))) {
-            pathAsFile.mkdirs();
-        }
     }
     public Website create(URL url) {
 
@@ -107,27 +105,16 @@ public class WebsiteService {
 
             for (String link : links) {
               //Do all checks to ensure that the link is valid and not a duplicate and its source file can be downloaded
-              if (link == null || link.isEmpty() || link.contains("#") || link.contains("javascript") || link.contains("mailto") || link.contains("tel") || link.contains("data") || link.contains("about") || link.contains("file") || link.contains("ftp") || link.contains("chrome-extension") || link.contains("blob") || link.contains("chrome") || link.contains("edge") || link.contains("microsoft") || link.contains("microsoftedge") || link.contains("microsoft-edge") || link.contains("microsoft-edge") || link.contains("microsoftedge") || link.contains("microsoft") || link.contains("microsoftedge") || link.contains("microsoft-edge") || link.contains("microsoft-edge") || link.contains("microsoftedge") || link.contains("microsoft") || link.contains("microsoftedge") || link.contains("microsoft-edge") || link.contains("microsoft-edge") || link.contains("microsoftedge") || link.contains("microsoft")) {
+              if (link == null || link.isEmpty() || link.contains("#") || link.contains("javascript") || link.contains("mailto") || link.contains("http")) {
                   continue;
               }
-              // check if link contains protocol
-//                if (!link.contains("http")) {
-//                    link = url.getProtocol() + "://" + url.getHost() + link;
-//                }
               ReqLink reqLink = new ReqLink();
               reqLink.setWebsite(saved);
-              boolean isFromSameSite = link.charAt(0) == '/';
-              if (isFromSameSite) {
-                  URL _url = new URL(url.toExternalForm() + link.substring(1));
-                  createFolder(filePath+"/"+ link.substring(1));
-                  reqLink.setUrl(_url);
-                  reqLink.setPath(filePath+"/"+ link.substring(1));
-              }else{
-                  URL _url = new URL(link);
-                  reqLink.setUrl(_url);
-                  createFolder(linksPath+"/"+_url.getHost());
-                  reqLink.setPath(linksPath);
-                }
+              boolean hasSlash = link.charAt(0) == '/';
+              URL _url = new URL(url.toExternalForm()+"/"+link);
+              reqLink.setUrl(_url);
+              createFolder(linksPath+"/"+_url.getPath());
+              reqLink.setPath(linksPath+"/"+_url.getPath());
               linkService.create(reqLink);
             }
             return saved;

@@ -5,11 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Utility {
-    public static void createFolder(String path){
+    public static Boolean createFolder(String path){
         File pathAsFile = new File(path);
-        System.out.println(path+"creating folder");
         if (!Files.exists(Paths.get(path))) {
-            pathAsFile.mkdirs();
+            return pathAsFile.mkdirs();
         }
+        return false;
     }
 }
