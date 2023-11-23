@@ -1,2 +1,3 @@
 # IDM
-Simple file idm made in springboot
+A website downloader made with springboot.
+Feel free to clone and improve the code.
